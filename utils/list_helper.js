@@ -1,10 +1,10 @@
 const dummy = (blogs) => {
     return 1
-  }
+}
 
-  const totalLikes = (blogs) => {
+const totalLikes = (blogs) => {
     return blogs.reduce((sum, blog) => sum + blog.likes, 0);
-  };
+};
 // const totalLikes = (blogs) => {
 //     return blogs.likes === totalLikes.likes 
 
