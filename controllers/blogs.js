@@ -36,19 +36,21 @@ blogsRouter.post('/', (request, response, next) => {
   // Add new Blog using MongoDB 
   const body = request.body
   
-  if (!body.content) {
+  if (!body.title) {
     return response.status(400).json({
       error: 'content missing'
     })
   }
 
   // Add new Blog when using MongoDB 
-  const Blog = new Blog({
-    content: body.content,
-    important: Boolean(body.important) || false
+  const blog = new Blog({
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: Number(body.likes)
   })
 
-  Blog.save().then(savedBlog=> {
+  blog.save().then(savedBlog=> {
     response.json(savedBlog)
   }).catch(error =>next(error))
 })
@@ -65,14 +67,16 @@ blogsRouter.delete('/:id', (request, response, next) => {
 blogsRouter.put('/:id', (request, response, next) => {
     const body = request.body
 
-    const Blog = {
-      content: body.content,
-      important: body.important,
+    const blog = {
+      title: body.title,
+      author: body.author,
+      url: body.url,
+      likes: body.likes
     }
   
     Blog.findByIdAndUpdate(
       request.params.id, 
-      Blog,
+      blog,
       { new: true, runValidators: true, context: 'query' }
     )
       .then(updatedBlog => {
