@@ -1,4 +1,5 @@
-const { test, describe } = require('node:test')
+const { test, describe, after, beforeEach } = require('node:test')
+const Blog = require('../models/blog')
 const assert = require('node:assert')
 const helper = require('./test_helper')
 const listHelper = require('../utils/list_helper')
@@ -8,11 +9,30 @@ const app = require('../app')
 
 const api = supertest(app)
 
+beforeEach(async () => {
+  await Blog.deleteMany({})
+
+  const blogObjects = helper.initialBlogs
+    .map(blog => new Blog(blog))
+  const promiseArray = blogObjects.map(blog => blog.save())
+  await Promise.all(promiseArray)
+
+  console.log('Promise Array', promiseArray)
+})
+
 test('dummy returns one', () => {
   const blogs = []
 
   const result = listHelper.dummy(blogs)
   assert.strictEqual(result, 1)
+})
+
+test.only('blogs are returned as json', async () => {
+  console.log('entered test')
+    await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
 })
 
 describe('total likes', () => {
@@ -30,4 +50,8 @@ describe('total likes', () => {
         const result = listHelper.totalLikes(helper.initialBlogs)
         assert.strictEqual(result, 29)
       })
+})
+
+after(async () => {
+  await mongoose.connection.close()
 })

@@ -1,14 +1,9 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 
-blogsRouter.get('/', (request, response) => {
-    Blog.find({}).then(blogs => {
-        response.json(blogs);
-      }).catch(error => {
-        logger.error('Error fetching Blogs:', error.message);
-        console.error('Error fetching Blogs:', error.message);
-        response.status(500).json({ error: 'Failed to fetch Blogs' });
-      });
+blogsRouter.get('/', async (request, response) => {
+  const blogs = await Blog.find({})
+  response.json(blogs)
 })
 
 blogsRouter.get('/:id', (request, response, next) => {
