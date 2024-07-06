@@ -27,12 +27,30 @@ test('dummy returns one', () => {
   assert.strictEqual(result, 1)
 })
 
-test.only('blogs are returned as json', async () => {
+test('blogs are returned as json', async () => {
   console.log('entered test')
-    await api
+    const response = await api
       .get('/api/blogs')
       .expect(200)
       .expect('Content-Type', /application\/json/)
+
+  console.log('DATA IN API: ', response.body);
+})
+
+test.only('blogs are returned as json and have id field', async () => {
+  console.log('entered test')
+  const response = await api
+    .get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  console.log('DATA IN API: ', response.body);
+
+  const blogs = response.body
+  blogs.forEach(blog => {
+    assert.ok(blog.id, 'Blog should have id field')
+    assert.strictEqual(blog._id, undefined, 'Blog should not have _id field')
+  })
 })
 
 describe('total likes', () => {
