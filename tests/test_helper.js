@@ -23,7 +23,14 @@ const initialBlogs = [
         "url": "www.eqweqw123.com",
         "likes": 6,
         "id": "6672fcaecc5aae16ed38a083"
-    }
+    },
+    {
+      "title": "testdulu",
+      "author": "TESTESTSEES",
+      "url": "www.test12312.com",
+      "likes": 10,
+      "id": "6672fcaecc5aae16ed38a085"
+  }
 ]
 
 const onlyOneBlog = [
