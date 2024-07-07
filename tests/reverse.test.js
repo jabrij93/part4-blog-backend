@@ -54,23 +54,51 @@ test('blogs are returned as json and have id field', async () => {
 })
 
 test.only('verifies http POST successfully creates a new blog post', async () => {
-  console.log('entered test')
-  const response = await api
+  // Step 1: Get the initial list of blogs
+  let response = await api
     .get('/api/blogs')
     .expect(200)
     .expect('Content-Type', /application\/json/)
 
-  console.log('DATA IN API: ', response.body);
+  const initialBlogs = response.body
+  const initialCount = initialBlogs.length
 
-  const blogs = response.body
-  const blogsId = blogs.map(blog => parseInt(blog.id, 16))
-  const maxBlogId = Math.max(...blogsId)
-  console.log("BLOGS ID", maxBlogId);
-  // blogs.forEach(blog => {
-  //   assert.ok(blog.id, 'Blog should have id field')
-  //   assert.strictEqual(blog._id, undefined, 'Blog should not have _id field')
-  // })
+  // Step 2: Create a new blog post
+  const newBlog = {
+    title: 'New Blog Post',
+    author: 'Author Name',
+    url: 'http://example.com',
+    likes: 5
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  // Step 3: Get the updated list of blogs
+  response = await api
+    .get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const updatedBlogs = response.body
+  const updatedCount = updatedBlogs.length
+
+  // Verify the count has increased by one
+  assert.strictEqual(updatedCount, initialCount + 1)
+
+  // Step 4: Verify the new blog post content
+  const savedBlog = updatedBlogs.find(blog => blog.title === newBlog.title)
+  assert.ok(savedBlog)
+  assert.strictEqual(savedBlog.author, newBlog.author)
+  assert.strictEqual(savedBlog.url, newBlog.url)
+  assert.strictEqual(savedBlog.likes, newBlog.likes)
+
+  console.log('New blog post created and verified successfully')
 })
+
 
 describe('total likes', () => {
     test('of empty list is zero', () => {
