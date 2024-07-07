@@ -40,7 +40,7 @@ blogsRouter.post('/', async (request, response) => {
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: Number(body.likes)
+    likes: body.likes === undefined ? 0 : Number(body.likes)
   });
 
   const savedBlog = await blog.save();

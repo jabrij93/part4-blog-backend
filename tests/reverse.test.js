@@ -53,7 +53,45 @@ test('blogs are returned as json and have id field', async () => {
   })
 })
 
-test.only('verifies http POST successfully creates a new blog post', async () => {
+test.only('if new blogs has no likes property, default it to 0', async () => {
+  // Step 1: Get the initial list of blogs
+  let response = await api
+    .get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const initialBlogs = response.body
+  const initialCount = initialBlogs.likes
+
+  // Step 2: Create a new blog post
+  const newBlog = {
+    title: 'Test New Blog Post',
+    author: 'test by jabs',
+    url: 'http://example.com'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  // Step 3: Get the updated list of blogs
+  response = await api
+    .get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const updatedBlogs = response.body
+  const updatedCount = updatedBlogs.likes
+
+  // Verify the count has increased by one
+  assert.strictEqual(updatedCount, initialCount)
+
+  console.log('New blog post default to 0 successfully')
+})
+
+test('verifies http POST successfully creates a new blog post', async () => {
   // Step 1: Get the initial list of blogs
   let response = await api
     .get('/api/blogs')
