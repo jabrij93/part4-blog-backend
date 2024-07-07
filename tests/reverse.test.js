@@ -53,7 +53,7 @@ test('blogs are returned as json and have id field', async () => {
   })
 })
 
-test.only('if new blogs has no likes property, default it to 0', async () => {
+test('if new blogs has no likes property, default it to 0', async () => {
   // Step 1: Get the initial list of blogs
   let response = await api
     .get('/api/blogs')
@@ -89,6 +89,34 @@ test.only('if new blogs has no likes property, default it to 0', async () => {
   assert.strictEqual(updatedCount, initialCount)
 
   console.log('New blog post default to 0 successfully')
+})
+
+test.only('if title or url is missing, 400 error is returned', async () => {
+  // Step 1: Get the initial list of blogs
+  let response = await api
+    .get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const initialBlogs = response.body
+  const initialCount = initialBlogs.likes
+
+  // Step 2: Create a new blog post
+  const newBlog = {
+    author: 'test by jabss',
+    url: 'www.testwithurl.com'
+  }
+
+  let response2 = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+
+  // Verify error 400 is returned
+  assert.ok(response2)
+
+  console.log('title or url missing error detected successfully')
 })
 
 test('verifies http POST successfully creates a new blog post', async () => {
