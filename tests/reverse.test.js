@@ -37,7 +37,7 @@ test('blogs are returned as json', async () => {
   console.log('DATA IN API: ', response.body);
 })
 
-test.only('blogs are returned as json and have id field', async () => {
+test('blogs are returned as json and have id field', async () => {
   console.log('entered test')
   const response = await api
     .get('/api/blogs')
@@ -51,6 +51,25 @@ test.only('blogs are returned as json and have id field', async () => {
     assert.ok(blog.id, 'Blog should have id field')
     assert.strictEqual(blog._id, undefined, 'Blog should not have _id field')
   })
+})
+
+test.only('verifies http POST successfully creates a new blog post', async () => {
+  console.log('entered test')
+  const response = await api
+    .get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  console.log('DATA IN API: ', response.body);
+
+  const blogs = response.body
+  const blogsId = blogs.map(blog => parseInt(blog.id, 16))
+  const maxBlogId = Math.max(...blogsId)
+  console.log("BLOGS ID", maxBlogId);
+  // blogs.forEach(blog => {
+  //   assert.ok(blog.id, 'Blog should have id field')
+  //   assert.strictEqual(blog._id, undefined, 'Blog should not have _id field')
+  // })
 })
 
 describe('total likes', () => {
