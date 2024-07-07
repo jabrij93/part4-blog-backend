@@ -27,28 +27,25 @@ blogsRouter.get('/:id', (request, response, next) => {
     .catch(error => next(error));
 })
 
-blogsRouter.post('/', (request, response, next) => {
-  // Add new Blog using MongoDB 
-  const body = request.body
-  
+blogsRouter.post('/', async (request, response) => {
+  const body = request.body;
+
   if (!body.title) {
     return response.status(400).json({
       error: 'content missing'
-    })
+    });
   }
 
-  // Add new Blog when using MongoDB 
   const blog = new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
     likes: Number(body.likes)
-  })
+  });
 
-  blog.save().then(savedBlog=> {
-    response.status(201).json(savedBlog)
-  }).catch(error =>next(error))
-})
+  const savedBlog = await blog.save();
+  response.status(201).json(savedBlog);
+});
 
 blogsRouter.delete('/:id', (request, response, next) => {
   // Delete person using MONGO DB

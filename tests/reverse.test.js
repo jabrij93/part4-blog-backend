@@ -65,8 +65,8 @@ test.only('verifies http POST successfully creates a new blog post', async () =>
 
   // Step 2: Create a new blog post
   const newBlog = {
-    title: 'New Blog Post',
-    author: 'Author Name',
+    title: 'Test New Blog Post',
+    author: 'test by jabs',
     url: 'http://example.com',
     likes: 5
   }
