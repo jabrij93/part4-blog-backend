@@ -65,18 +65,9 @@ blogsRouter.delete('/:id', async (request, response, next) => {
     });
   }
   response.status(204).end()
-  
-  // Delete person using MONGO DB
-  // Blog.findByIdAndDelete(request.params.id)
-  //   .then(result => {
-  //     response.status(204).end()
-  //   })
-  //   .catch(error => next(error))
-  
-  //   console.log("delete succeed")  
 })
 
-blogsRouter.put('/:id', (request, response, next) => {
+blogsRouter.put('/:id', async (request, response, next) => {
     const body = request.body
 
     const blog = {
@@ -86,15 +77,15 @@ blogsRouter.put('/:id', (request, response, next) => {
       likes: body.likes
     }
   
-    Blog.findByIdAndUpdate(
-      request.params.id, 
-      blog,
-      { new: true, runValidators: true, context: 'query' }
-    )
-      .then(updatedBlog => {
-        response.json(updatedBlog)
-      })
-      .catch(error => next(error))
+    const findBlogById = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true, runValidators: true, context: 'query' })
+
+    if (!findBlogById) {
+      return response.status(404).json({
+        error: 'Blog post does not exist!'
+      });
+    }
+
+    response.json(findBlogById)
 })
 
 module.exports = blogsRouter
