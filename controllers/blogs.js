@@ -55,15 +55,25 @@ blogsRouter.post('/', async (request, response) => {
   response.status(201).json(savedBlog);
 });
 
-blogsRouter.delete('/:id', (request, response, next) => {
-  // Delete person using MONGO DB
-  Blog.findByIdAndDelete(request.params.id)
-    .then(result => {
-      response.status(204).end()
-    })
-    .catch(error => next(error))
+blogsRouter.delete('/:id', async (request, response, next) => {
+
+  const blog = await Blog.findByIdAndDelete(request.params.id)
+
+  if (!blog) {
+    return response.status(404).json({
+      error: 'ID does not exist!'
+    });
+  }
+  response.status(204).end()
   
-    console.log("delete succeed")  
+  // Delete person using MONGO DB
+  // Blog.findByIdAndDelete(request.params.id)
+  //   .then(result => {
+  //     response.status(204).end()
+  //   })
+  //   .catch(error => next(error))
+  
+  //   console.log("delete succeed")  
 })
 
 blogsRouter.put('/:id', (request, response, next) => {
