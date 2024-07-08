@@ -62,6 +62,8 @@ blogsRouter.delete('/:id', (request, response, next) => {
       response.status(204).end()
     })
     .catch(error => next(error))
+  
+    console.log("delete succeed")  
 })
 
 blogsRouter.put('/:id', (request, response, next) => {
