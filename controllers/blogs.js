@@ -6,7 +6,7 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs)
 })
 
-blogsRouter.get('/:id', async (request, response, next) => {
+blogsRouter.get('/:id', async (request, response) => {
   // Find Blogs by ID using MongoDB
   const id = request.params.id;
 
@@ -55,7 +55,7 @@ blogsRouter.post('/', async (request, response) => {
   response.status(201).json(savedBlog);
 });
 
-blogsRouter.delete('/:id', async (request, response, next) => {
+blogsRouter.delete('/:id', async (request, response) => {
 
   const blog = await Blog.findByIdAndDelete(request.params.id)
 
@@ -67,7 +67,7 @@ blogsRouter.delete('/:id', async (request, response, next) => {
   response.status(204).end()
 })
 
-blogsRouter.put('/:id', async (request, response, next) => {
+blogsRouter.put('/:id', async (request, response) => {
     const body = request.body
 
     const blog = {
