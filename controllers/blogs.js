@@ -6,7 +6,7 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs)
 })
 
-blogsRouter.get('/:id', (request, response, next) => {
+blogsRouter.get('/:id', async (request, response, next) => {
   // Find Blogs by ID using MongoDB
   const id = request.params.id;
 
@@ -15,16 +15,24 @@ blogsRouter.get('/:id', (request, response, next) => {
   //   return response.status(400).json({ error: 'Invalid ID format' });
   // }
 
+  const blogFindById = await Blog.findById(id)
+
+  if (blogFindById) {
+    return response.json(blogFindById)
+  } else {
+    return response.status(404).end
+  }
+
   // Find Blogs by ID using MongoDB
-  Blog.findById(id)
-    .then(Blog => {
-      if (Blog) {
-        response.json(Blog);
-      } else {
-        response.status(404).end()
-      }
-    })
-    .catch(error => next(error));
+  // Blog.findById(id)
+  //   .then(Blog => {
+  //     if (Blog) {
+  //       response.json(Blog);
+  //     } else {
+  //       response.status(404).end()
+  //     }
+  //   })
+  //   .catch(error => next(error));
 })
 
 blogsRouter.post('/', async (request, response) => {

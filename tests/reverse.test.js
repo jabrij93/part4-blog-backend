@@ -98,9 +98,6 @@ test.only('if title or url is missing, 400 error is returned', async () => {
     .expect(200)
     .expect('Content-Type', /application\/json/)
 
-  const initialBlogs = response.body
-  const initialCount = initialBlogs.likes
-
   // Step 2: Create a new blog post
   const newBlog = {
     author: 'test by jabss',
