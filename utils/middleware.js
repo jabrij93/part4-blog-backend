@@ -20,7 +20,7 @@ const errorHandler = (error, request, response, next) => {
   } else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message })
   } else if (error.name === 'MongoServerError') {
-    return response.status(400).json({ error: 'username must be unique' })
+    return response.status(400).json({ error: 'username must be unique ' })
   }
 
   next(error)
