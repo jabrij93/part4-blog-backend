@@ -25,26 +25,7 @@ blogsRouter.get('/:id', async (request, response) => {
   } else {
     return response.status(404).end
   }
-
-  // Find Blogs by ID using MongoDB
-  // Blog.findById(id)
-  //   .then(Blog => {
-  //     if (Blog) {
-  //       response.json(Blog);
-  //     } else {
-  //       response.status(404).end()
-  //     }
-  //   })
-  //   .catch(error => next(error));
 })
-
-// const getTokenFrom = request => {
-//   const authorization = request.get('authorization')
-//   if (authorization && authorization.startsWith('Bearer ')) {
-//     return authorization.replace('Bearer ', '')
-//   }
-//   return null
-// }
 
 blogsRouter.post('/', async (request, response) => {
   const body = request.body;
@@ -54,7 +35,6 @@ blogsRouter.post('/', async (request, response) => {
     return response.status(401).json({ error: 'token invalid' })
   }
   const user = await User.findById(decodedToken.id)
-  console.log("USERRRR", user)
 
   if (!body.title || !body.url) {
     return response.status(400).json({
@@ -85,11 +65,8 @@ blogsRouter.delete('/:id', async (request, response) => {
   }
 
   const user = await User.findById(decodedToken.id)
-  console.log("USERRRR", user)
 
   const blog = await Blog.findById(request.params.id)
-  // const blog = await Blog.findByIdAndDelete(request.params.id)
-  console.log("BLOGGGG", blog)
 
   if(user._id.toString() !== blog.user.toString()) {
     return response.status(403).json({ error: 'permission denied'})
