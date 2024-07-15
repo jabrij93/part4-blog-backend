@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user', {username: 1, name: 1, id: 1})
+  console.log("BLOGS length", blogs.length)
   response.json(blogs)
 })
 
@@ -78,13 +79,29 @@ blogsRouter.post('/', async (request, response) => {
 
 blogsRouter.delete('/:id', async (request, response) => {
 
-  const blog = await Blog.findByIdAndDelete(request.params.id)
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+
+  const user = await User.findById(decodedToken.id)
+  console.log("USERRRR", user)
+
+  const blog = await Blog.findById(request.params.id)
+  // const blog = await Blog.findByIdAndDelete(request.params.id)
+  console.log("BLOGGGG", blog)
+
+  if(user._id.toString() !== blog.user.toString()) {
+    return response.status(403).json({ error: 'permission denied'})
+  }
 
   if (!blog) {
     return response.status(404).json({
       error: 'ID does not exist!'
     });
   }
+
+  await Blog.findByIdAndDelete(request.params.id)
   response.status(204).end()
 })
 
