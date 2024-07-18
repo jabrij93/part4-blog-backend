@@ -17,7 +17,6 @@ beforeEach(async () => {
   const promiseArray = blogObjects.map(blog => blog.save())
   await Promise.all(promiseArray)
 
-  console.log('Promise Array', promiseArray)
 })
 
 test('dummy returns one', () => {
@@ -28,23 +27,17 @@ test('dummy returns one', () => {
 })
 
 test('blogs are returned as json', async () => {
-  console.log('entered test')
     const response = await api
       .get('/api/blogs')
       .expect(200)
       .expect('Content-Type', /application\/json/)
-
-  console.log('DATA IN API: ', response.body);
 })
 
 test('blogs are returned as json and have id field', async () => {
-  console.log('entered test')
   const response = await api
     .get('/api/blogs')
     .expect(200)
     .expect('Content-Type', /application\/json/)
-
-  console.log('DATA IN API: ', response.body);
 
   const blogs = response.body
   blogs.forEach(blog => {
