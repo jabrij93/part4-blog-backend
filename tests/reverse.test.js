@@ -156,7 +156,7 @@ describe.only('Creates new blog post', () => {
     })
 
   token = loginResponse.body.token
-  console.log('Token:', token)
+  
     const newBlog = {
       title: 'Test New Blog Post',
       author: 'test by jabs',
