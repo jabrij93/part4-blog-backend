@@ -10,7 +10,6 @@ const tokenExtractor = (request, response, next) => {
   } else {
     request.token = null;
   }
-  console.log('Extracted Token:', request.token)  // Add this line
   next()
 }
 
@@ -27,7 +26,6 @@ const userExtractor = async (request, response, next) => {
       return response.status(401).json({ error: 'token invalid' })
     }
     request.user = await User.findById(decodedToken.id)
-    console.log('Extracted User:', request.user)  // Add this line
     next()
   } catch(error) {
     next(error)

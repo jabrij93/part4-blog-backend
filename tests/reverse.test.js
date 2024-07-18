@@ -162,7 +162,7 @@ describe.only('Creates new blog post', () => {
       author: 'test by jabs',
       url: 'http://example.com',
       likes: 5,
-      user: new mongoose.Types.ObjectId('6699475822a401fef562eb28')  // Ensure `new` keyword is used
+      user: '6699475822a401fef562eb28'  // Ensure `new` keyword is used
     }
 
     await api
