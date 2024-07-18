@@ -33,6 +33,12 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
 
   const user = request.user
 
+  if (!user) {
+    return response.status(401).json({
+      error: 'token not provided'
+    });
+  }
+
   if (!body.title || !body.url) {
     return response.status(400).json({
       error: 'content missing'
