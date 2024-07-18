@@ -91,7 +91,7 @@ test('if new blogs has no likes property, default it to 0', async () => {
   console.log('New blog post default to 0 successfully')
 })
 
-test.only('if title or url is missing, 400 error is returned', async () => {
+test('if title or url is missing, 400 error is returned', async () => {
   // Step 1: Get the initial list of blogs
   let response = await api
     .get('/api/blogs')
@@ -116,18 +116,9 @@ test.only('if title or url is missing, 400 error is returned', async () => {
   console.log('title or url missing error detected successfully')
 })
 
-describe('Creates new blog post', () => {
-  test('verifies if a token is not provided', async () => {
-    // Step 1: Get the initial list of blogs
-    let response = await api
-      .get('/api/blogs')
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
+describe.only('Creates new blog post', () => {
+  test.only('verifies if a token is not provided', async () => {
 
-    const initialBlogs = response.body
-    const initialCount = initialBlogs.length
-
-    // Step 2: Create a new blog post
     const newBlog = {
       title: 'Test New Blog Post',
       author: 'test by jabs',
@@ -140,72 +131,8 @@ describe('Creates new blog post', () => {
       .send(newBlog)
       .expect(401)
       .expect('Content-Type', /application\/json/)
-
-    // Step 3: Get the updated list of blogs
-    // response = await api
-    //   .get('/api/blogs')
-    //   .expect(200)
-    //   .expect('Content-Type', /application\/json/)
-
-    // const updatedBlogs = response.body
-    // const updatedCount = updatedBlogs.length
-
-
-    // // Step 4: Verify the new blog post content
-    // const savedBlog = updatedBlogs.find(blog => blog.title === newBlog.title)
-    // assert.ok(savedBlog)
-    // assert.strictEqual(savedBlog.author, newBlog.author)
-    // assert.strictEqual(savedBlog.url, newBlog.url)
-    // assert.strictEqual(savedBlog.likes, newBlog.likes)
-
-    // console.log('New blog post created and verified successfully')
+      .expect({ error: 'token not provided' })  // Verifying the error messa
   })
-
-  // test('verifies http POST successfully creates a new blog post', async () => {
-  //   // Step 1: Get the initial list of blogs
-  //   let response = await api
-  //     .get('/api/blogs')
-  //     .expect(200)
-  //     .expect('Content-Type', /application\/json/)
-
-  //   const initialBlogs = response.body
-  //   const initialCount = initialBlogs.length
-
-  //   // Step 2: Create a new blog post
-  //   const newBlog = {
-  //     title: 'Test New Blog Post',
-  //     author: 'test by jabs',
-  //     url: 'http://example.com',
-  //     likes: 5
-  //   }
-
-  //   await api
-  //     .post('/api/blogs')
-  //     .send(newBlog)
-  //     .expect(201)
-  //     .expect('Content-Type', /application\/json/)
-
-  //   // Step 3: Get the updated list of blogs
-  //   response = await api
-  //     .get('/api/blogs')
-  //     .expect(200)
-  //     .expect('Content-Type', /application\/json/)
-
-  //   const updatedBlogs = response.body
-  //   const updatedCount = updatedBlogs.length
-
-  //   // Verify the count has increased by one
-  //   assert.strictEqual(updatedCount, initialCount + 1)
-
-  //   // Step 4: Verify the new blog post content
-  //   const savedBlog = updatedBlogs.find(blog => blog.title === newBlog.title)
-  //   assert.ok(savedBlog)
-  //   assert.strictEqual(savedBlog.author, newBlog.author)
-  //   assert.strictEqual(savedBlog.url, newBlog.url)
-  //   assert.strictEqual(savedBlog.likes, newBlog.likes)
-
-  //   console.log('New blog post created and verified successfully')
-  // })
 })
 
 
