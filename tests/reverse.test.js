@@ -13,8 +13,6 @@ const User = require('../models/user')
 
 const api = supertest(app)
 
-let token = ''
-
 beforeEach(async () => {
   await Blog.deleteMany({})
   await User.deleteMany({})
@@ -156,7 +154,7 @@ describe.only('Creates new blog post', () => {
     })
 
   token = loginResponse.body.token
-  
+
     const newBlog = {
       title: 'Test New Blog Post',
       author: 'test by jabs',
