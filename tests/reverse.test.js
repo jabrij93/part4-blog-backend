@@ -1,4 +1,7 @@
+const mongoose = require('mongoose')
+const jwt = require('jsonwebtoken')
 const { test, describe, after, beforeEach } = require('node:test')
+const bcrypt = require('bcrypt')
 const Blog = require('../models/blog')
 const assert = require('node:assert')
 const helper = require('./test_helper')
@@ -6,17 +9,22 @@ const listHelper = require('../utils/list_helper')
 const totalLikes = require('../utils/list_helper').totalLikes
 const supertest = require('supertest')
 const app = require('../app')
+const User = require('../models/user')
 
 const api = supertest(app)
 
+let token = ''
+
 beforeEach(async () => {
   await Blog.deleteMany({})
+  await User.deleteMany({})
 
   const blogObjects = helper.initialBlogs
     .map(blog => new Blog(blog))
   const promiseArray = blogObjects.map(blog => blog.save())
-  await Promise.all(promiseArray)
 
+  
+  await Promise.all(promiseArray)
 })
 
 test('dummy returns one', () => {
@@ -126,8 +134,45 @@ describe.only('Creates new blog post', () => {
       .expect('Content-Type', /application\/json/)
       .expect({ error: 'token not provided' })  // Verifying the error messa
   })
-})
 
+  test.only('create new blog post successful', async () => {
+
+  // Create a new user
+  const passwordHash = await bcrypt.hash('test1234', 10)
+  const user = new User({
+    _id: new mongoose.Types.ObjectId('6699475822a401fef562eb28'),
+    username: 'jabs93',
+    name: 'jabs',
+    passwordHash
+  })
+  await user.save()
+
+  // Log in to get a token
+  const loginResponse = await api
+    .post('/api/login')
+    .send({
+      username: 'jabs93',
+      password: 'test1234'
+    })
+
+  token = loginResponse.body.token
+  console.log('Token:', token)
+    const newBlog = {
+      title: 'Test New Blog Post',
+      author: 'test by jabs',
+      url: 'http://example.com',
+      likes: 5,
+      user: new mongoose.Types.ObjectId('6699475822a401fef562eb28')  // Ensure `new` keyword is used
+    }
+
+    await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+  })
+})
 
 describe('total likes', () => {
     test('of empty list is zero', () => {
