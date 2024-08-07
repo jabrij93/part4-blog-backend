@@ -15,7 +15,7 @@ const tokenExtractor = (request, response, next) => {
 
 // User Extractor
 const userExtractor = async (request, response, next) => {
-  if (!request.token) {
+  if (!request.token) { 
     request.user = null
     return next()  // Proceed without user if no token
   }
