@@ -18,8 +18,7 @@ blogsRouter.get('/:id', async (request, response) => {
   // if (!mongoose.Types.ObjectId.isValid(id)) {
   //   return response.status(400).json({ error: 'Invalid ID format' });
   // }
-
-  const blogFindById = await Blog.findById(id)
+  const blogFindById = await Blog.findById(id).populate('user', { username: 1, name: 1 });
 
   if (blogFindById) {
     return response.json(blogFindById)
@@ -32,6 +31,7 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
   const body = request.body;
 
   const user = request.user
+  
 
   if (!user) {
     return response.status(401).json({
@@ -57,13 +57,26 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
   user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
  
+  console.log('User creating the blog:', user);
   response.status(201).json(savedBlog);
 });
 
+//
+blogsRouter.get('/test', middleware.userExtractor, (request, response) => {
+  response.json({ user: request.user });
+});
+
 blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
+  console.log('User:', request.user); // Debug line
 
   const user = request.user
 
+  // Check if the user is authenticated
+  if (!user) {
+    return response.status(401).json({ error: 'user not authenticated' });
+  }
+
+  try {
   const blog = await Blog.findById(request.params.id)
 
   if(user._id.toString() !== blog.user.toString()) {
@@ -72,13 +85,17 @@ blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) =
 
   if (!blog) {
     return response.status(404).json({
-      error: 'ID does not exist!'
+      error: 'ID/Blog not found!'
     });
   }
 
   await Blog.findByIdAndDelete(request.params.id)
   response.status(204).end()
-})
+  } catch (error) {
+    console.error('Error handling delete request:', error); // Log error
+    response.status(500).json({ error: 'something went wrong' });
+  }
+});
 
 blogsRouter.put('/:id', async (request, response) => {
     const body = request.body
