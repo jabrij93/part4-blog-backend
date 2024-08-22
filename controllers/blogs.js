@@ -29,10 +29,8 @@ blogsRouter.get('/:id', async (request, response) => {
 
 blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
   const body = request.body;
-
   const user = request.user
   
-
   if (!user) {
     return response.status(401).json({
       error: 'token not provided'
@@ -50,7 +48,11 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
     author: body.author,
     url: body.url,
     likes: body.likes === undefined ? 0 : Number(body.likes),
-    user: user._id
+    user: {
+      username: user.username,
+      id: user.id,
+      name: user.name
+    }
   });
 
   const savedBlog = await blog.save()
