@@ -48,11 +48,7 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
     author: body.author,
     url: body.url,
     likes: body.likes === undefined ? 0 : Number(body.likes),
-    user: {
-      username: user.username,
-      id: user.id,
-      name: user.name
-    }
+    user: user._id
   });
 
   const savedBlog = await blog.save()
@@ -65,6 +61,7 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
 
 //
 blogsRouter.get('/test', middleware.userExtractor, (request, response) => {
+
   response.json({ user: request.user });
 });
 
