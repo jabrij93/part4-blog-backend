@@ -55,8 +55,11 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
   user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
  
+  // ✅ This populates the blog's `user` field with { id, username, name }
+  const populatedBlog = await savedBlog.populate('user', { username: 1, name: 1 });
+
   console.log('User creating the blog:', user);
-  response.status(201).json(savedBlog);
+  response.status(201).json(populatedBlog);
 });
 
 //
@@ -106,7 +109,11 @@ blogsRouter.put('/:id', async (request, response) => {
       likes: body.likes
     }
   
-    const findBlogById = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true, runValidators: true, context: 'query' })
+    const findBlogById = await Blog.findByIdAndUpdate
+                          (request.params.id, 
+                            blog, 
+                            { new: true, runValidators: true, context: 'query' }
+                          )
 
     if (!findBlogById) {
       return response.status(404).json({
